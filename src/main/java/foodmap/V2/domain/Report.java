@@ -5,6 +5,7 @@ import foodmap.V2.domain.post.Post;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
                 @Index(name = "IDX_REPORT_POST_ID", columnList = "post_id")
         }
 )
+@NoArgsConstructor
 public class Report {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -62,4 +64,5 @@ public class Report {
         this.createdAt = LocalDateTime.now(); // 현재 일시를 생성 일시로 설정
 
     }
+
 }

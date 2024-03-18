@@ -1,6 +1,6 @@
 package foodmap.V2.controller;
 
-import foodmap.V2.domain.Payment;
+
 import foodmap.V2.dto.request.PaymentReqeustDTO;
 import foodmap.V2.dto.response.PaymentResponse;
 import foodmap.V2.service.JwtService;

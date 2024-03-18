@@ -4,20 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import foodmap.V2.config.websocket.WebSocketSessionManager;
 import foodmap.V2.domain.Notification;
+import foodmap.V2.domain.UserInfo;
 import foodmap.V2.dto.response.NotificationResponse;
+import foodmap.V2.exception.user.UserNotFound;
 import foodmap.V2.repository.NotificationRepository;
 import foodmap.V2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
+
 import org.springframework.web.socket.WebSocketSession;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -31,7 +32,8 @@ public class CustomEventHandler {
     public void handleCustomEvent(EventNotificationDTO event) throws Exception {
         log.info("handleCustomEvent");
         log.info("initSessionList,{}", sessionManager.getSessionList());
-        String senderName = userRepository.findById(event.getSenderId()).get().getUsername();
+        UserInfo sender = userRepository.findById(event.getSenderId()).orElseThrow(UserNotFound::new);
+        String senderName = sender.getUsername();
         String notificationMessage = String.format("%s님이 회원님의 %s 게시글에 좋아요를 눌렀습니다.", senderName,event.getPost().getTitle());
         Notification notification = Notification.builder()
                 .message(notificationMessage)

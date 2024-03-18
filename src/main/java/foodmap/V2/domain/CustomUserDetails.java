@@ -1,7 +1,5 @@
 package foodmap.V2.domain;
 
-import foodmap.V2.domain.UserInfo;
-import foodmap.V2.domain.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,8 +15,7 @@ public class CustomUserDetails extends UserInfo implements UserDetails, OAuth2Us
     private final String username;
 
     private final String password;
-    Collection<? extends GrantedAuthority> authorities;
-    private Map<String, Object> oAuth2Attributes;
+    private final Collection<? extends GrantedAuthority> authorities;
 
     public CustomUserDetails(UserInfo byUsername) {
 //        this.username = byUsername.getUsername();
@@ -31,6 +28,11 @@ public class CustomUserDetails extends UserInfo implements UserDetails, OAuth2Us
             auths.add(new SimpleGrantedAuthority(role.getName().toUpperCase()));
         }
         this.authorities = auths;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
     }
 
     @Override
@@ -68,8 +70,7 @@ public class CustomUserDetails extends UserInfo implements UserDetails, OAuth2Us
         return true;
     }
     // OAuth2 Client 필수 메서드 재정의
-    @Override
-    public Map<String, Object> getAttributes() { return oAuth2Attributes; }
+
     @Override
     public String getName() { return username; }
 }

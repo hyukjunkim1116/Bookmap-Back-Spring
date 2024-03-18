@@ -3,19 +3,20 @@ package foodmap.V2.service;
 import foodmap.V2.repository.UserRepository;
 import foodmap.V2.domain.UserInfo;
 import foodmap.V2.domain.CustomUserDetails;
-import lombok.AllArgsConstructor;
+
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 

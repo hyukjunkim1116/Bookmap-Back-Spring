@@ -19,7 +19,7 @@ public class UserInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column
     private Long id;
     private String email;
     private Boolean social; // 소셜 로그인 여부

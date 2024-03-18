@@ -94,7 +94,7 @@ public class UserService {
 
         StringBuilder tempPwd = new StringBuilder();
 
-        int idx = 0;
+        int idx;
         for (int i = 0; i < 10; i++) {
             idx = (int) (charSet.length * Math.random());
             tempPwd.append(charSet[idx]);

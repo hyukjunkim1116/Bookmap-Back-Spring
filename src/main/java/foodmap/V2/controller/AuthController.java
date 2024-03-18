@@ -4,7 +4,6 @@ package foodmap.V2.controller;
 import foodmap.V2.config.kakao.*;
 import foodmap.V2.dto.response.ImageResponseDTO;
 import foodmap.V2.dto.response.user.UserCreateResponse;
-import foodmap.V2.repository.UserRepository;
 import foodmap.V2.domain.RefreshToken;
 import foodmap.V2.domain.UserInfo;
 import foodmap.V2.dto.request.*;
@@ -45,10 +44,6 @@ public class AuthController {
     private final KakaoTokenJsonData kakaoTokenJsonData;
     private final KakaoUserInfo kakaoUserInfo;
     private final KakaoService kakaoService;
-    @GetMapping("/favicon.ico")
-    public void returnEmptyFavicon() {
-        // 아무런 내용도 반환하지 않음
-    }
     @PostMapping("/")
     public void signup(@RequestBody SignUpRequestDTO signUpRequestDTO){
         userService.signup(signUpRequestDTO);
@@ -158,7 +153,7 @@ public class AuthController {
     public void editUser(@RequestBody EditUserInfoDTO editUserInfoDTO, @PathVariable Long uid){
         log.info("uid,{}",uid);
         userService.changeUserInfo(uid,editUserInfoDTO);
-    };
+    }
     @DeleteMapping("/{uid}/")
     public void deleteUser(@PathVariable Long uid){
 
@@ -182,16 +177,7 @@ public class AuthController {
                 .image(newImage)
                 .build();
     }
-    };
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    @GetMapping("/api/ping")
-//    public String Test() {
-//        try {
-//            return "Welcome";
-//        } catch (Exception e){
-//            throw new RuntimeException(e);
-//        }
-//    }
+    }
 
 
 

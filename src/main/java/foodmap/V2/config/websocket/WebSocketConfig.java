@@ -1,5 +1,5 @@
 package foodmap.V2.config.websocket;
-import foodmap.V2.config.event.CustomEventHandler;
+
 import foodmap.V2.config.event.NotificationEventListener;
 import foodmap.V2.repository.ChatRepository;
 import foodmap.V2.repository.NotificationRepository;

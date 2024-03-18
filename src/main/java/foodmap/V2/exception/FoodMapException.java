@@ -1,7 +1,6 @@
 package foodmap.V2.exception;
 
 import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,11 +13,6 @@ public abstract class FoodMapException extends RuntimeException {
     // 생성자
     public FoodMapException(String message) {
         super(message); // 부모 클래스인 RuntimeException의 생성자 호출
-    }
-
-    // 생성자
-    public FoodMapException(String message, Throwable cause) {
-        super(message, cause); // 부모 클래스인 RuntimeException의 생성자 호출
     }
 
     // 자식 클래스에서 구현할 추상 메서드로, 예외의 HTTP 상태 코드를 반환합니다.

@@ -5,16 +5,12 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import foodmap.V2.domain.Comment;
 import foodmap.V2.domain.post.Post;
 import foodmap.V2.dto.request.comment.CommentSearch;
-import foodmap.V2.dto.request.post.PostSearch;
 import foodmap.V2.exception.post.PostNotFound;
 import foodmap.V2.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import java.util.List;
-
 import static foodmap.V2.domain.QComment.comment1;
-import static foodmap.V2.domain.post.QPost.post;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,7 +24,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         return jpaQueryFactory.selectFrom(comment1)
                 .where(comment1.post.eq(post))
                 .orderBy(comment1.id.desc());
-    };
+    }
 
     @Override
     public List<Comment> getList(Long postId,CommentSearch commentSearch) {

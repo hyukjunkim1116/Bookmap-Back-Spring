@@ -2,7 +2,7 @@ package foodmap.V2.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import foodmap.V2.exception.ErrorResponse;
-import jakarta.servlet.ServletException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,7 +23,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         log.error("[인증오류] 403");
         log.info(String.valueOf(accessDeniedException));
         ErrorResponse errorResponse = ErrorResponse.builder()

@@ -38,10 +38,5 @@ public class PaymentService {
                 .map(PaymentResponse::new)
                 .collect(Collectors.toList());
     }
-//    public List<PostResponse> getList(PostSearch postSearch) {
-//        log.info("service,{},{},{}",postSearch.getSearch(),postSearch.getSort(),postSearch.getPage());
-//        return postRepository.getList(postSearch).stream()
-//                .map(PostResponse::new)
-//                .collect(Collectors.toList());
-//    }
+
 }

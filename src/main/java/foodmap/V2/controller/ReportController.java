@@ -1,7 +1,7 @@
 package foodmap.V2.controller;
 
 import foodmap.V2.dto.request.ReportRequestDTO;
-import foodmap.V2.dto.request.SignUpRequestDTO;
+
 import foodmap.V2.service.JwtService;
 import foodmap.V2.service.ReportService;
 import lombok.RequiredArgsConstructor;

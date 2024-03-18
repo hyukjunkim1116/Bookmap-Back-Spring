@@ -11,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.*;
-
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +24,11 @@ import java.util.List;
 public class ChatWebSocketHandler implements WebSocketHandler {
     private final UserRepository userRepository;
     private final ChatRepository chatRepository;
-    private final List<WebSocketSession> sessionList = new ArrayList<WebSocketSession>();
+    private final List<WebSocketSession> sessionList = new ArrayList<>();
 
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(WebSocketSession session) {
         sessionList.add(session);
         log.info("ChatWebSocketHandler 연결완료");
         // Connection established
@@ -59,21 +57,20 @@ public class ChatWebSocketHandler implements WebSocketHandler {
                 .build();
         log.info("session,{}",session.getAttributes());
         TextMessage textMessage = new TextMessage(objectMapper.writeValueAsString(chatResponse));
-        for (int i=0; i <sessionList.size(); i++) {
-            WebSocketSession s = sessionList.get(i);
+        for (WebSocketSession s : sessionList) {
             s.sendMessage(textMessage);
         }
 
     }
 
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+    public void handleTransportError(WebSocketSession session, Throwable exception){
         log.info("error occured");
         sessionList.remove(session);
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus){
         log.info("close chat");
         sessionList.remove(session);
     }

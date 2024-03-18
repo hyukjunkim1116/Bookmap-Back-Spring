@@ -3,7 +3,6 @@ package foodmap.V2.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 @Builder
 @Getter
 @Entity

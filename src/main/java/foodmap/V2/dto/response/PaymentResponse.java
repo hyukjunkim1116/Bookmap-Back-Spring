@@ -1,7 +1,7 @@
 package foodmap.V2.dto.response;
 
 import foodmap.V2.domain.Payment;
-import foodmap.V2.domain.UserInfo;
+
 import lombok.Builder;
 import lombok.Getter;
 

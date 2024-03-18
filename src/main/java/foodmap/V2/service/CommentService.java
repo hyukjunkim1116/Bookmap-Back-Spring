@@ -9,8 +9,7 @@ import foodmap.V2.dto.request.comment.CommentEdit;
 import foodmap.V2.dto.request.comment.CommentSearch;
 import foodmap.V2.dto.response.comment.CommentDetailResponseDTO;
 import foodmap.V2.dto.response.comment.CommentListResponseDTO;
-import foodmap.V2.dto.response.comment.CommentResponse;
-import foodmap.V2.dto.response.post.PostListResponseDTO;
+
 import foodmap.V2.exception.comment.CommentNotFound;
 import foodmap.V2.exception.post.PostNotFound;
 import foodmap.V2.exception.user.UserNotFound;
@@ -63,14 +62,7 @@ public class CommentService {
                 .orElseThrow(CommentNotFound::new);
         commentRepository.delete(comment);
     }
-//    public void edit(Long commentId, CommentEdit request) {
-//        Comment comment = commentRepository.findById(commentId)
-//                .orElseThrow(CommentNotFound::new);
-//        // 새로운 내용으로 댓글 업데이트
-//        comment.setComment(request.getComment());
-//        // 업데이트된 댓글 저장
-//        commentRepository.save(comment);
-//    }
+
     @Transactional
     public CommentDetailResponseDTO edit(Long commentId, CommentEdit commentEdit) {
         Comment comment = commentRepository.findById(commentId)

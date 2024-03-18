@@ -1,16 +1,15 @@
 package foodmap.V2.config.kakao;
 
 import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+
 
 
 // 인가코드를 이용하여 Token ( Access , Refresh )를 받는다.
@@ -19,22 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KakaoService {
     private final RestTemplate restTemplate;
-    private final WebClient webClient;
     private static final String MESSAGE_URI = "https://kapi.kakao.com/v2/api/talk/memo/default/send";
-
-    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
-    private String CLIENT_ID;
-
-//    public void sendMessage(String token) {
-//        String orgToken = token.replaceAll("^\"|\"$", "");
-//        String tokenValue = String.format("Bearer %s",orgToken);
-//        String requestBody = "{\"template_object\":{\"text\":\"" + "로그인 완료" + "\"}}";
-//        webClient.post()
-//                .uri(MESSAGE_URI)
-//                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//                .header("Authorization", tokenValue)
-//                .body(requestBody);
-//    }
 public void sendKakaoMessage(String accessToken) {
 
     HttpHeaders CustomHeaders = new HttpHeaders();

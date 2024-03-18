@@ -1,5 +1,4 @@
 package foodmap.V2.dto.response.comment;
-import foodmap.V2.dto.response.post.PostDetailResponseDTO;
 import lombok.*;
 
 import java.util.List;

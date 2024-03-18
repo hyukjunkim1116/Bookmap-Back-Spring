@@ -2,7 +2,6 @@ package foodmap.V2.repository.comment;
 
 import foodmap.V2.domain.Comment;
 import foodmap.V2.dto.request.comment.CommentSearch;
-import foodmap.V2.dto.request.post.PostSearch;
 
 import java.util.List;
 

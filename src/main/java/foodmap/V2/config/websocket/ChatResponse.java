@@ -1,11 +1,10 @@
 package foodmap.V2.config.websocket;
 
 import foodmap.V2.domain.Chat;
-import foodmap.V2.domain.post.Post;
+
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 
 @Getter
 public class ChatResponse {

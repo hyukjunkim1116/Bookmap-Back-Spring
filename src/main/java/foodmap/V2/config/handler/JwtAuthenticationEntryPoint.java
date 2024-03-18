@@ -2,7 +2,7 @@ package foodmap.V2.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import foodmap.V2.exception.ErrorResponse;
-import jakarta.servlet.ServletException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;

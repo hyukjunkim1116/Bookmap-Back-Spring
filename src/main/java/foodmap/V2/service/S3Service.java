@@ -1,7 +1,7 @@
 package foodmap.V2.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
+
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +36,6 @@ public class S3Service {
         String originalFilename = parts[parts.length - 1];
         log.info("name,{},{}",fileUrl,originalFilename);
         amazonS3.deleteObject(bucket, originalFilename);
-//        amazonS3.deleteObject(new DeleteObjectRequest(bucket,fileUrl));
     }
-//    public void deleteImageList(Object originalFilenameList)  {
-//        amazonS3.deleteObject(bucket,originalFilenameList);
-//    }
+
 }

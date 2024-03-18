@@ -4,8 +4,7 @@ import foodmap.V2.config.websocket.ChatResponse;
 import foodmap.V2.dto.response.NotificationResponse;
 import foodmap.V2.repository.ChatRepository;
 import foodmap.V2.repository.NotificationRepository;
-import foodmap.V2.repository.UserRepository;
-import foodmap.V2.repository.post.PostRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

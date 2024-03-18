@@ -2,7 +2,7 @@ package foodmap.V2.domain;
 
 
 import foodmap.V2.domain.post.Post;
-import foodmap.V2.domain.post.PostEditor;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,7 +38,7 @@ public class Comment {
     private Post post;
 
     @Builder
-    public Comment(UserInfo author, String comment,LocalDateTime createdAt) {
+    public Comment(UserInfo author, String comment) {
         this.author = author;
         this.comment = comment;
         this.createdAt = LocalDateTime.now();

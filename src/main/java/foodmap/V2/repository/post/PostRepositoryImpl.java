@@ -1,6 +1,6 @@
 package foodmap.V2.repository.post;
 
-import com.querydsl.core.types.dsl.Expressions;
+
 import com.querydsl.jpa.impl.JPAQuery;
 import foodmap.V2.domain.post.Post;
 import foodmap.V2.dto.request.post.PostSearch;
@@ -19,7 +19,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         // query 변수를 한 번만 선언하고 초기화
         return jpaQueryFactory.selectFrom(post)
                 .where(post.title.containsIgnoreCase(postSearch.getSearch()));
-    };
+    }
     public List<Post> getQuery(JPAQuery<Post> query,PostSearch postSearch) {
         return switch (postSearch.getSort()) {
             case "likeCount" -> {

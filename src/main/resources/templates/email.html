@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html xmlns:th="http://www.thymeleaf.org" lang="kr">
 <body>
 <div style="margin:100px;">
     <h1> 안녕하세요.</h1>
@@ -9,7 +8,7 @@
     <p> 버튼을 클릭해 인증를 완료하세요! </p>
     <br>
     <a th:href="@{http://localhost:8080/api/users/verify/{uidb64}/{token}(uidb64=${uidb64}, token=${token})}">
-        <button style="font-family:verdana;">인증하기</button>
+        <button style="font-family:verdana,sans-serif;">인증하기</button>
     </a>
     <br/>
 </div>

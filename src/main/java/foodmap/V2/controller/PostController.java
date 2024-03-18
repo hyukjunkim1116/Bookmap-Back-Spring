@@ -1,13 +1,12 @@
 package foodmap.V2.controller;
 
-import foodmap.V2.domain.post.Post;
 import foodmap.V2.dto.request.post.PostCreate;
 import foodmap.V2.dto.request.post.PostEdit;
 import foodmap.V2.dto.request.post.PostSearch;
-import foodmap.V2.dto.response.ImageResponseDTO;
+
 import foodmap.V2.dto.response.post.*;
 import foodmap.V2.service.JwtService;
-import foodmap.V2.service.UserService;
+
 import foodmap.V2.service.post.PostService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.stream.Stream;
+
 
 @Slf4j
 @RestController
@@ -29,7 +28,7 @@ import java.util.stream.Stream;
 public class PostController {
     private final PostService postService;
     private final JwtService jwtService;
-    private final UserService userService;
+
 
     @GetMapping("/")
     public PostListResponseDTO get(@ModelAttribute PostSearch postSearch,@RequestHeader(value = "Authorization", required = false) String token) {
@@ -75,7 +74,7 @@ public class PostController {
 
 //    @PreAuthorize("hasPermission(#postId, 'POST', 'DELETE')")
     @PutMapping("/{postId}")
-    public PostDetailResponseDTO edit(@RequestHeader("Authorization") String token,@RequestBody @Valid PostEdit request,@PathVariable Long postId) throws IOException {
+    public PostDetailResponseDTO edit(@RequestHeader("Authorization") String token,@RequestBody @Valid PostEdit request,@PathVariable Long postId) {
         String accessToken = token.substring(7);
         Long userId= Long.valueOf(jwtService.extractUserid(accessToken));
         log.info("userid,{}",userId);
@@ -83,7 +82,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public void delete(@RequestHeader("Authorization") String token,@PathVariable Long postId) throws IOException {
+    public void delete(@RequestHeader("Authorization") String token,@PathVariable Long postId){
         String accessToken = token.substring(7);
         Long userId= Long.valueOf(jwtService.extractUserid(accessToken));
         postService.delete(postId,userId);
@@ -105,38 +104,7 @@ public class PostController {
         return postService.savePostImage(image);
     }
     @DeleteMapping("/image")
-    public void deletePostImage(@RequestParam("url") String imageUrl) throws IOException {
+    public void deletePostImage(@RequestParam("url") String imageUrl){
         postService.deletePostImage(imageUrl);
     }
-//    db에 해당 게시글 좋아요 정보 저장 후 결과 반환	게시글 좋아요	CREATE	POST	/api/posts/<int:postId>/like	-	{
-//        like: [uid…],
-//        likes_count: Number,
-//                is_liked: Boolean
-//    }
-//    db에 해당 게시글 싫어요 정보 저장 후 결과 반환	게시글 싫어요	CREATE	POST	/api/posts/<int:postId>/dislike	-	{
-//        dislike: [uid…],
-//        dislikes_count: Number,
-//                is_disliked: Boolean
-//    }
-//    db에 해당 게시글 북마크 정보 저장 후 결과 반환	게시글 북마크	CREATE	POST	/api/posts/<int:postId>/bookmark	-	{
-//        bookmark: [uid…],
-//        is_bookmarked: Boolean,
-//    }
-//
-//    @GetMapping("/posts")
-//    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
-//        return postService.getList(postSearch);
-//    }
-//
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @PatchMapping("/posts/{postId}")
-//    public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit request) {
-//        postService.edit(postId, request);
-//    }
-//
-//    @PreAuthorize("hasRole('ROLE_ADMIN') && hasPermission(#postId, 'POST', 'DELETE')")
-//    @DeleteMapping("/posts/{postId}")
-//    public void delete(@PathVariable Long postId) {
-//        postService.delete(postId);
-//    }
 }

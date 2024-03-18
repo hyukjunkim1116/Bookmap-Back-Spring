@@ -4,8 +4,9 @@ import foodmap.V2.repository.RefreshTokenRepository;
 import foodmap.V2.repository.UserRepository;
 import foodmap.V2.domain.RefreshToken;
 import foodmap.V2.domain.UserInfo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -13,13 +14,10 @@ import java.util.Optional;
 import java.util.UUID;
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RefreshTokenService {
-
-    @Autowired
-    RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
-    UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
 
     public RefreshToken createRefreshToken(String email){
         RefreshToken refreshToken = RefreshToken.builder()

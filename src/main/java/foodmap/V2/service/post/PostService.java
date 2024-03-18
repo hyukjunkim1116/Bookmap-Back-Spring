@@ -1,7 +1,7 @@
 package foodmap.V2.service.post;
 
 import foodmap.V2.config.event.EventPublisher;
-import foodmap.V2.domain.UserInfo;
+
 import foodmap.V2.domain.post.Post;
 import foodmap.V2.domain.post.PostEditor;
 import foodmap.V2.dto.request.post.PostEdit;
@@ -17,9 +17,8 @@ import foodmap.V2.service.JwtService;
 import foodmap.V2.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.ApplicationEventPublisher;
+
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,10 +28,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Collections;
+
 import java.util.List;
-import java.util.Objects;
+
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -44,8 +42,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final JwtService jwtService;
     private final S3Service s3Service;
-    @Autowired
-    private EventPublisher eventPublisher;
+    private final EventPublisher eventPublisher;
     public PostDetailResponseDTO write(String email, PostCreate postCreate) {
         var user = userRepository.findUserInfoByEmail(email)
                 .orElseThrow(UserNotFound::new);
@@ -92,8 +89,8 @@ public class PostService {
                                 .build()
                 )
                 .likes_count((long) post.getLikedUser().size())
-                .dislikes_count(post.getDislike().stream().count())
-                .comments_count(post.getComments().stream().count())
+                .dislikes_count((long) post.getDislike().size())
+                .comments_count((long) post.getComments().size())
                 .is_bookmarked(post.getBookmark().stream().anyMatch(uid->uid.equals(userId)))
                 .is_disliked(post.getDislike().stream().anyMatch(uid->uid.equals(userId)))
                 .is_liked(post.getLikedUser().stream().anyMatch(uid->uid.equals(userId)))
@@ -116,11 +113,11 @@ public class PostService {
         log.info("postlist,{}",postList);
         var postCount = postList.size();
         var hasNext = postRepository.hasNextPage(postSearch);
-        Long loginUser;
+        long loginUser;
         if (token == null) {
             loginUser=0L;
         } else {
-            loginUser=Long.valueOf(jwtService.extractUserid(token.substring(7)));
+            loginUser= Long.parseLong(jwtService.extractUserid(token.substring(7)));
         }
         List<PostDetailResponseDTO> postDetailResponseDTOList = postList.stream().map(
                 post -> PostDetailResponseDTO.builder()
@@ -132,8 +129,8 @@ public class PostService {
                                         .build()
                         )
                         .likes_count((long) post.getLikedUser().size())
-                        .dislikes_count(post.getDislike().stream().count())
-                        .comments_count(post.getComments().stream().count())
+                        .dislikes_count((long) post.getDislike().size())
+                        .comments_count((long) post.getComments().size())
                         .is_bookmarked(post.getBookmark().stream().anyMatch(uid->uid.equals(loginUser)))
                         .is_disliked(post.getDislike().stream().anyMatch(uid->uid.equals(loginUser)))
                         .is_liked(post.getLikedUser().stream().anyMatch(uid->uid.equals(loginUser)))
@@ -183,8 +180,8 @@ public class PostService {
                                     .build()
                     )
                     .likes_count((long) post.getLikedUser().size())
-                    .dislikes_count(post.getDislike().stream().count())
-                    .comments_count(post.getComments().stream().count())
+                    .dislikes_count((long) post.getDislike().size())
+                    .comments_count((long) post.getComments().size())
                     .is_bookmarked(post.getBookmark().stream().anyMatch(uid->uid.equals(userId)))
                     .is_disliked(post.getDislike().stream().anyMatch(uid->uid.equals(userId)))
                     .is_liked(post.getLikedUser().stream().anyMatch(uid->uid.equals(userId)))
@@ -205,7 +202,7 @@ public class PostService {
 
     }
 
-    public void delete(Long postId,Long userId) throws IOException {
+    public void delete(Long postId,Long userId){
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFound::new);
         if (post.getUserId().equals(userId)) {
@@ -241,7 +238,7 @@ public class PostService {
         postRepository.save(post);
         return PostLikeDTO.builder()
                 .like(post.getLikedUser())
-                .likes_count(post.getLikedUser().stream().count())
+                .likes_count((long) post.getLikedUser().size())
                 .is_liked(post.getLikedUser().stream().anyMatch(uid->uid.equals(userId)))
                 .build();
     }
@@ -258,7 +255,7 @@ public class PostService {
         postRepository.save(post);
         return PostDislikeDTO.builder()
                 .dislike(post.getDislike())
-                .dislikes_count(post.getDislike().stream().count())
+                .dislikes_count((long) post.getDislike().size())
                 .is_disliked(post.getDislike().stream().anyMatch(uid->uid.equals(userId)))
                 .build();
     }
@@ -278,36 +275,13 @@ public class PostService {
                 .is_bookmarked(post.getBookmark().stream().anyMatch(uid->uid.equals(userId)))
                 .build();
     }
-//    formdata를 url로 바꾸고 db에 저장 후 프론트 반환	게시글 이미지 생성	CREATE	POST	/api/posts/image	{
-//        image: formData
-//    }	{
-//”imageUrl”
-//    }
-//    db에 게시글의 사진 지우고 저장	게시글 이미지 삭제	DELETE	DELETE	/api/posts/image?url=imageUrl	{
-//”imageUrl”
-//    }	-
-//    public ImageResponseDTO savePostImage(MultipartFile image) throws IOException {
-//        String imageUrl =s3Service.saveFile(image);
-//        return ImageResponseDTO.builder()
-//                .image(imageUrl)
-//                .build();
-//    }
+
 public String savePostImage(MultipartFile image) throws IOException {
     return s3Service.saveFile(image);
 }
 
-    public void deletePostImage(String imageUrl) throws IOException {
+    public void deletePostImage(String imageUrl){
         s3Service.deleteImage(imageUrl);
-    };
-
+    }
 }
-
-
-
-
-
-
-
-
-
 

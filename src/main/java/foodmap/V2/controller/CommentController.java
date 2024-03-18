@@ -5,15 +5,13 @@ import foodmap.V2.dto.request.comment.CommentEdit;
 import foodmap.V2.dto.request.comment.CommentSearch;
 import foodmap.V2.dto.response.comment.CommentDetailResponseDTO;
 import foodmap.V2.dto.response.comment.CommentListResponseDTO;
-import foodmap.V2.dto.response.comment.CommentResponse;
+
 import foodmap.V2.service.CommentService;
 import foodmap.V2.service.JwtService;
 import groovy.util.logging.Slf4j;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
