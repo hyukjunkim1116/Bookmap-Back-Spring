@@ -1,4 +1,4 @@
-package foodmap.V2.config.kakao;
+package foodmap.V2.dto.response;
 
 import lombok.Data;
 

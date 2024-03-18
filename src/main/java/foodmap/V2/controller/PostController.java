@@ -7,7 +7,7 @@ import foodmap.V2.dto.request.post.PostSearch;
 import foodmap.V2.dto.response.post.*;
 import foodmap.V2.service.JwtService;
 
-import foodmap.V2.service.post.PostService;
+import foodmap.V2.service.PostService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

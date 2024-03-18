@@ -1,9 +1,12 @@
-package foodmap.V2.config.websocket;
+package foodmap.V2.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import foodmap.V2.config.WebSocketSessionManager;
 import foodmap.V2.domain.Chat;
 import foodmap.V2.domain.UserInfo;
+import foodmap.V2.dto.request.ChatRequestDTO;
+import foodmap.V2.dto.response.ChatResponse;
 import foodmap.V2.exception.user.UserNotFound;
 import foodmap.V2.repository.ChatRepository;
 import foodmap.V2.repository.UserRepository;
@@ -12,8 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 웹소켓 핸들러 - 세션 구분 X
@@ -24,12 +25,12 @@ import java.util.List;
 public class ChatWebSocketHandler implements WebSocketHandler {
     private final UserRepository userRepository;
     private final ChatRepository chatRepository;
-    private final List<WebSocketSession> sessionList = new ArrayList<>();
+    private final WebSocketSessionManager webSocketSessionManager;
 
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        sessionList.add(session);
+        webSocketSessionManager.addSession(session);
         log.info("ChatWebSocketHandler 연결완료");
         // Connection established
     }
@@ -57,7 +58,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
                 .build();
         log.info("session,{}",session.getAttributes());
         TextMessage textMessage = new TextMessage(objectMapper.writeValueAsString(chatResponse));
-        for (WebSocketSession s : sessionList) {
+        for (WebSocketSession s : webSocketSessionManager.getSessionList()) {
             s.sendMessage(textMessage);
         }
 
@@ -66,13 +67,13 @@ public class ChatWebSocketHandler implements WebSocketHandler {
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception){
         log.info("error occured");
-        sessionList.remove(session);
+        webSocketSessionManager.removeSession(session);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus){
         log.info("close chat");
-        sessionList.remove(session);
+        webSocketSessionManager.removeSession(session);
     }
 
     @Override

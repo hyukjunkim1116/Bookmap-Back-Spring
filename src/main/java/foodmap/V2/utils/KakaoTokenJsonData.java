@@ -1,5 +1,6 @@
-package foodmap.V2.config.kakao;
+package foodmap.V2.utils;
 
+import foodmap.V2.dto.response.KakaoTokenResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

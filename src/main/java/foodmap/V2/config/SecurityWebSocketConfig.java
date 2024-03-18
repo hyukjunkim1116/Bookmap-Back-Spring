@@ -1,4 +1,4 @@
-package foodmap.V2.config.websocket;
+package foodmap.V2.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -33,9 +33,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String email;
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             try {
-                    token = authHeader.substring(7);
-            log.info("asd,{}",token);
-            email = jwtService.extractUsername(token);
+                token = authHeader.substring(7);
+                email = jwtService.extractUsername(token);
+            } catch (ExpiredJwtException e)
+            {
+                throw new Unauthorized();
+            }
                 if(email != null && SecurityContextHolder.getContext().getAuthentication() == null){
                     UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(email);
                     if(jwtService.validateToken(token, userDetails)){
@@ -44,12 +47,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     }
                 }
-
-        } catch (ExpiredJwtException e)
-            {
-                throw new Unauthorized();
-            }
         }
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            throw new Unauthorized();
+        }
     }
 }

@@ -1,6 +1,6 @@
 package foodmap.V2.service;
 import foodmap.V2.domain.Notification;
-import foodmap.V2.config.websocket.ChatResponse;
+import foodmap.V2.dto.response.ChatResponse;
 import foodmap.V2.dto.response.NotificationResponse;
 import foodmap.V2.repository.ChatRepository;
 import foodmap.V2.repository.NotificationRepository;

@@ -1,7 +1,7 @@
 package foodmap.V2.service;
 
-import foodmap.V2.config.kakao.KakaoUserCredentials;
-import foodmap.V2.config.kakao.KakaoUserInfoResponse;
+import foodmap.V2.dto.response.KakaoUserCredentials;
+import foodmap.V2.dto.response.KakaoUserInfoResponse;
 import foodmap.V2.repository.UserRepository;
 import foodmap.V2.domain.UserInfo;
 import foodmap.V2.dto.request.ChangePasswordRequestDTO;

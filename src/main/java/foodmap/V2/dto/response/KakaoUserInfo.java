@@ -1,5 +1,6 @@
-package foodmap.V2.config.kakao;
+package foodmap.V2.dto.response;
 
+import foodmap.V2.dto.response.KakaoUserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;

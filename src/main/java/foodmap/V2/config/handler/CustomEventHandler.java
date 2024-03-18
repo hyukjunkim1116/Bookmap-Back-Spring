@@ -1,8 +1,10 @@
-package foodmap.V2.config.event;
+package foodmap.V2.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import foodmap.V2.config.websocket.WebSocketSessionManager;
+import foodmap.V2.dto.response.EventNotificationDTO;
+import foodmap.V2.config.listener.NotificationEventListener;
+import foodmap.V2.config.WebSocketSessionManager;
 import foodmap.V2.domain.Notification;
 import foodmap.V2.domain.UserInfo;
 import foodmap.V2.dto.response.NotificationResponse;

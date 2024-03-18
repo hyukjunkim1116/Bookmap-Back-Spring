@@ -1,5 +1,5 @@
-package foodmap.V2.config.event;
-import foodmap.V2.config.websocket.WebSocketSessionManager;
+package foodmap.V2.config.listener;
+import foodmap.V2.config.WebSocketSessionManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

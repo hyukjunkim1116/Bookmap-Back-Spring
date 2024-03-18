@@ -1,4 +1,4 @@
-package foodmap.V2.config.websocket;
+package foodmap.V2.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

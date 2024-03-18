@@ -1,4 +1,4 @@
-package foodmap.V2.config.websocket;
+package foodmap.V2.dto.response;
 
 import foodmap.V2.domain.Chat;
 

@@ -1,4 +1,4 @@
-package foodmap.V2.config.event;
+package foodmap.V2.dto.response;
 
 import foodmap.V2.domain.post.Post;
 import lombok.Builder;

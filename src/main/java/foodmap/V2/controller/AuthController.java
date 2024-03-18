@@ -1,8 +1,11 @@
 package foodmap.V2.controller;
 
 
-import foodmap.V2.config.kakao.*;
+import foodmap.V2.dto.response.KakaoUserCredentials;
+import foodmap.V2.dto.response.KakaoUserInfo;
 import foodmap.V2.dto.response.ImageResponseDTO;
+import foodmap.V2.dto.response.KakaoTokenResponse;
+import foodmap.V2.dto.response.KakaoUserInfoResponse;
 import foodmap.V2.dto.response.user.UserCreateResponse;
 import foodmap.V2.domain.RefreshToken;
 import foodmap.V2.domain.UserInfo;
@@ -13,6 +16,8 @@ import foodmap.V2.service.EmailService;
 import foodmap.V2.service.JwtService;
 import foodmap.V2.service.RefreshTokenService;
 import foodmap.V2.service.UserService;
+import foodmap.V2.unused.KakaoService;
+import foodmap.V2.utils.KakaoTokenJsonData;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

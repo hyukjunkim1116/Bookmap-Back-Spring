@@ -1,4 +1,4 @@
-package foodmap.V2.config.kakao;
+package foodmap.V2.unused;
 
 import net.minidev.json.JSONObject;
 

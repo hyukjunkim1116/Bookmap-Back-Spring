@@ -1,8 +1,9 @@
-package foodmap.V2.config.event;
+package foodmap.V2.config.publisher;
 
 
 import foodmap.V2.domain.post.Post;
 
+import foodmap.V2.dto.response.EventNotificationDTO;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.ApplicationEventPublisher;

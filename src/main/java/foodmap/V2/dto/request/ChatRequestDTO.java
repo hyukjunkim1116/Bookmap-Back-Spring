@@ -1,4 +1,4 @@
-package foodmap.V2.config.websocket;
+package foodmap.V2.dto.request;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
-package foodmap.V2.service.post;
+package foodmap.V2.service;
 
-import foodmap.V2.config.event.EventPublisher;
+import foodmap.V2.config.publisher.EventPublisher;
 
 import foodmap.V2.domain.post.Post;
 import foodmap.V2.domain.post.PostEditor;
