@@ -51,6 +51,7 @@ public class CustomEventHandler {
             Long uid = Long.valueOf(url.split("=")[1]);
             if (uid.equals(event.getReceiverId())) {
                 notificationEventListener.handleMessage(s, textMessage);
+                log.info("123");
             }
         }
     }
