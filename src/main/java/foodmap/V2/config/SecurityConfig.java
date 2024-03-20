@@ -52,6 +52,9 @@ public class SecurityConfig {
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+                        .requestMatchers("/api/books/").permitAll()
+                        .requestMatchers("/api/books/detail").permitAll()
+                        .requestMatchers("/api/books/crawling").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/users/").permitAll()
                         .requestMatchers(HttpMethod.GET,"/").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/posts/**").permitAll()
