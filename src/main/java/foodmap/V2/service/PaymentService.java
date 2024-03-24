@@ -6,6 +6,7 @@ import foodmap.V2.dto.request.PaymentReqeustDTO;
 import foodmap.V2.dto.response.PaymentResponse;
 import foodmap.V2.exception.user.UserNotFound;
 import foodmap.V2.repository.PaymentRepository;
+import foodmap.V2.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

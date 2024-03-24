@@ -8,6 +8,7 @@ import foodmap.V2.dto.request.post.PostEdit;
 import foodmap.V2.dto.request.post.PostSearch;
 import foodmap.V2.dto.response.post.*;
 import foodmap.V2.exception.post.PostNotFound;
+import foodmap.V2.exception.user.AccessDenied;
 import foodmap.V2.exception.user.Unauthorized;
 import foodmap.V2.exception.user.UserNotFound;
 import foodmap.V2.repository.post.PostRepository;
@@ -152,12 +153,9 @@ public class PostService {
                 .results(postDetailResponseDTOList).build();
     }
     public void increaseReadCount(Long id) {
-        var postOptional=postRepository.findById(id);
-        if (postOptional.isPresent()) {
-            Post post = postOptional.get();
-            post.setReadCount();
-            postRepository.save(post);
-        }
+        Post post=postRepository.findById(id).orElseThrow(PostNotFound::new);
+        post.setReadCount();
+        postRepository.save(post);
     }
 
 
@@ -221,7 +219,7 @@ public class PostService {
             // 각 이미지 태그에서 src 속성 값 가져오기
             postRepository.delete(post);
         } else {
-            throw new Unauthorized();
+            throw new AccessDenied();
         }
     }
     public PostLikeDTO toggleLike(String token, Long postId) {
@@ -275,11 +273,9 @@ public class PostService {
                 .is_bookmarked(post.getBookmark().stream().anyMatch(uid->uid.equals(userId)))
                 .build();
     }
-
-public String savePostImage(MultipartFile image) throws IOException {
-    return s3Service.saveFile(image);
-}
-
+    public String savePostImage(MultipartFile image) throws IOException {
+        return s3Service.saveFile(image);
+    }
     public void deletePostImage(String imageUrl){
         s3Service.deleteImage(imageUrl);
     }

@@ -9,7 +9,6 @@ public abstract class FoodMapException extends RuntimeException {
 
     // 예외 상황에서 발생한 유효성 검사 오류를 저장하기 위한 Map
     public final Map<String, String> validation = new HashMap<>();
-
     // 생성자
     public FoodMapException(String message) {
         super(message); // 부모 클래스인 RuntimeException의 생성자 호출

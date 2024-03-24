@@ -1,5 +1,6 @@
-package foodmap.V2.service;
+package foodmap.V2.service.user;
 
+import foodmap.V2.domain.RefreshToken;
 import foodmap.V2.dto.response.KakaoUserCredentials;
 import foodmap.V2.dto.response.KakaoUserInfoResponse;
 import foodmap.V2.repository.UserRepository;
@@ -10,8 +11,11 @@ import foodmap.V2.dto.request.SignUpRequestDTO;
 import foodmap.V2.exception.user.AlreadyExistsEmailException;
 import foodmap.V2.exception.user.InvalidPassword;
 import foodmap.V2.exception.user.UserNotFound;
+import foodmap.V2.service.S3Service;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +31,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final S3Service s3Service;
-
     public UserInfo getUserByEmail(String email) {
         return userRepository.findByEmail(String.valueOf(email));
     }
@@ -37,7 +40,6 @@ public class UserService {
     public Optional<UserInfo> getIfUserByEmail(String email) {
         return userRepository.findUserInfoByEmail(String.valueOf(email));
     }
-
     public void signup(SignUpRequestDTO signUpRequestDTO) {
         Optional<UserInfo> userOptional = Optional.ofNullable(userRepository.findByEmail(signUpRequestDTO.getEmail()));
         if (userOptional.isPresent()) {
@@ -124,6 +126,13 @@ public class UserService {
         UserInfo user = this.getUserById(uid).orElseThrow(UserNotFound::new);
         user.changeUserInfo(editUserInfoDTO.getEmail(),editUserInfoDTO.getUsername());
         userRepository.save(user);
+    }
+    public void changeUserRefreshToken(UserInfo user,RefreshToken refreshToken){
+        user.changeUserRefreshToken(refreshToken);
+        userRepository.save(user);
+    }
+    public UserInfo findUserByRefresh(String refresh){
+        return userRepository.findByRefreshTokenRefresh(refresh);
     }
     public void deleteUser(UserInfo user) {
         String image = user.getImage();

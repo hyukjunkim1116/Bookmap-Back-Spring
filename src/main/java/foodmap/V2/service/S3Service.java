@@ -1,5 +1,7 @@
 package foodmap.V2.service;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -31,11 +33,10 @@ public class S3Service {
         amazonS3.putObject(bucket, fileUrl, multipartFile.getInputStream(), metadata);
         return amazonS3.getUrl(bucket, fileUrl).toString();
     }
-    public void deleteImage(String fileUrl)  {
+    public void deleteImage(String fileUrl) throws SdkClientException {
         String[] parts = fileUrl.split("/");
         String originalFilename = parts[parts.length - 1];
         log.info("name,{},{}",fileUrl,originalFilename);
         amazonS3.deleteObject(bucket, originalFilename);
     }
-
 }

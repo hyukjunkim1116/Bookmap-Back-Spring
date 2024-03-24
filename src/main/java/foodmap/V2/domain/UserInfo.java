@@ -6,12 +6,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USERS")
@@ -33,7 +34,9 @@ public class UserInfo {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<UserRole> roles = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Post> post;
+    private List<Post> post = new ArrayList<>();
+    @Embedded
+    private RefreshToken refreshToken;
     public void changePassword(String newPassword) {
         this.password = newPassword;
     }
@@ -48,7 +51,9 @@ public class UserInfo {
         this.email = email;
         this.username=username;
     }
-
+    public void changeUserRefreshToken(RefreshToken refreshToken) {
+        this.refreshToken=refreshToken;
+    }
     @Builder
     public UserInfo(String username, String email, String password,Boolean social,String image,Boolean isVerified) {
         this.username = username;

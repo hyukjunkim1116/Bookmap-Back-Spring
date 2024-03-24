@@ -22,14 +22,11 @@ public class CustomUserDetails extends UserInfo implements UserDetails, OAuth2Us
         this.username = byUsername.getEmail();
         this.password= byUsername.getPassword();
         List<GrantedAuthority> auths = new ArrayList<>();
-
         for(UserRole role : byUsername.getRoles()){
-
             auths.add(new SimpleGrantedAuthority(role.getName().toUpperCase()));
         }
         this.authorities = auths;
     }
-
     @Override
     public Map<String, Object> getAttributes() {
         return null;

@@ -1,5 +1,6 @@
 package foodmap.V2.service;
 
+import foodmap.V2.domain.RefreshToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -10,9 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -45,7 +48,7 @@ public class JwtService {
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -70,12 +73,23 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+ 1000 * 60 * 10))
+                .setExpiration(new Date(System.currentTimeMillis()+ 1000 * 60))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
     private static Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+    public RefreshToken createRefreshToken(){
+        RefreshToken refreshToken = RefreshToken.builder()
+                .refresh(UUID.randomUUID().toString())
+                .expiryDate(Instant.now().plusMillis(1000*60*60)) // set expiry of refresh token to 10 minutes - you can configure it application.properties file
+                .build();
+        log.info("11234 :{}", refreshToken);
+        return refreshToken;
+    }
+    public Boolean verifyRefreshTokenExpiration(RefreshToken token){
+        return token.getExpiryDate().compareTo(Instant.now()) >= 0;
     }
 }

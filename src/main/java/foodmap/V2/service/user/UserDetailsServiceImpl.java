@@ -1,5 +1,6 @@
-package foodmap.V2.service;
+package foodmap.V2.service.user;
 
+import foodmap.V2.exception.user.InvalidRequest;
 import foodmap.V2.repository.UserRepository;
 import foodmap.V2.domain.UserInfo;
 import foodmap.V2.domain.CustomUserDetails;
@@ -17,17 +18,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
-
     private static final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
-        logger.debug("Entering in loadUserByUsername Method...");
         UserInfo user = userRepository.findByEmail(email);
         if(user == null){
             logger.error("Username not found: " + email);
-            throw new UsernameNotFoundException("could not found user..!!");
+            throw new UsernameNotFoundException("email이 틀렸습니당");
         }
         logger.info("User Authenticated Successfully..!!!");
         return new CustomUserDetails(user);

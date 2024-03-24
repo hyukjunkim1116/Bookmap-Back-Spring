@@ -28,13 +28,12 @@ public class WebSocketService {
                     .map(NotificationResponse::new)
                     .collect(Collectors.toList());
     }
-    public void setNotRead(Long userId, Long notId) {
+    public void setNotRead(Long notId) {
         Optional<Notification> notificationOptional = notificationRepository.findById(notId);
         if (notificationOptional.isPresent()) {
             Notification notification = notificationOptional.get();
             notification.setIs_read();
             notificationRepository.save(notification);
         }
-
     }
 }

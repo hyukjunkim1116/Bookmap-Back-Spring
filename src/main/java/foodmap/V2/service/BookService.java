@@ -58,7 +58,6 @@ public class BookService {
                 .bodyToMono(String.class);
     }
     public List<BookCrawlingResponseDTO> getBookCrawling(String isbn) throws IOException {
-
         return bookCrawler.scrapeWebsite(isbn);
     };
     public double getDistance(double targetLatitude,double targetLongitude,double currentLatitude,double currentLongitude) {
