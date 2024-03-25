@@ -1,6 +1,6 @@
-# FoodMap
+# BookMap
 
-- [프론트엔드 바로가기](https://github.com/hyukjunkim1116/foodmap-Vue3)
+- [프론트엔드 바로가기](https://github.com/hyukjunkim1116/Bookmap-Front-Vue3)
 
 ## 배포 주소
 
