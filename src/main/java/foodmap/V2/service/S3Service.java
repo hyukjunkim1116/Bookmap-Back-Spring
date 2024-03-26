@@ -1,9 +1,11 @@
 package foodmap.V2.service;
 
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 
+import com.amazonaws.services.s3.model.ListObjectsV2Request;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,5 +40,18 @@ public class S3Service {
         String originalFilename = parts[parts.length - 1];
         log.info("name,{},{}",fileUrl,originalFilename);
         amazonS3.deleteObject(bucket, originalFilename);
+    }
+
+    public Long getFileCountInBucket() {
+        // 버킷 내 객체 목록 가져오기
+        ListObjectsV2Request request = new ListObjectsV2Request().withBucketName(bucket);
+        ListObjectsV2Result result;
+        Long count = 0L;
+        do {
+            result = amazonS3.listObjectsV2(request);
+            count += result.getObjectSummaries().size();
+            request.setContinuationToken(result.getNextContinuationToken());
+        } while (result.isTruncated());
+        return count;
     }
 }

@@ -11,6 +11,7 @@ import foodmap.V2.domain.RefreshToken;
 import foodmap.V2.domain.UserInfo;
 import foodmap.V2.dto.request.*;
 import foodmap.V2.dto.response.JwtResponseDTO;
+import foodmap.V2.exception.user.AccessDenied;
 import foodmap.V2.exception.user.RefreshTokenExpired;
 import foodmap.V2.exception.user.InvalidRequest;
 import foodmap.V2.exception.user.UserNotFound;
@@ -20,6 +21,7 @@ import foodmap.V2.service.user.UserService;
 import foodmap.V2.unused.KakaoService;
 import foodmap.V2.utils.KakaoTokenJsonData;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -98,20 +101,27 @@ public class AuthController {
         }
     }
     @PutMapping("/change-password/")
-    public void changePassword(@RequestHeader("Authorization") String token, @RequestBody ChangePasswordRequestDTO changePasswordRequestDTO){
-        String jwtToken = token.substring(7);
-        var email = jwtService.extractUsername(jwtToken);
-        var user = userService.getUserByEmail(email);
-        userService.authChangePassword(user,changePasswordRequestDTO);
+    public void changePassword(HttpServletRequest request, @RequestBody ChangePasswordRequestDTO changePasswordRequestDTO){
+        Optional<UserInfo> user =userService.getUserByRequest(request);
+        if (user.isPresent()) {
+            userService.authChangePassword(user.get(),changePasswordRequestDTO);
+        } else {
+            throw new UserNotFound();
+        }
+
     }
     @PostMapping("/{uid}/verify/")
-    public void sendVerifyEmail(@RequestHeader("Authorization") String token, @PathVariable Long uid) throws MessagingException {
-        String accessToken = token.substring(7);
-        var email = jwtService.extractUsername(accessToken);
-        String uidb64= Base64.getEncoder().encodeToString(String.valueOf(uid).getBytes());
-        // userId를 문자열로 변환하여 Base64로 인코딩
-        String testToken = "test";
-        emailService.sendHtmlEmail(email,"FoodMap 인증 메일", uidb64,testToken);
+    public void sendVerifyEmail(HttpServletRequest request,@PathVariable Long uid) throws MessagingException {
+        Optional<UserInfo> user =userService.getUserByRequest(request);
+        if (user.isPresent()) {
+            String uidb64= Base64.getEncoder().encodeToString(String.valueOf(uid).getBytes());
+            // userId를 문자열로 변환하여 Base64로 인코딩
+            String testToken = "test";
+            String email = user.get().getEmail();
+            emailService.sendHtmlEmail(email,"FoodMap 인증 메일", uidb64,testToken);
+        } else {
+            throw new UserNotFound();
+        }
     }
     @GetMapping("/verify/{uidb64}/{token}")
     public RedirectView verifyEmailPermit(@PathVariable String token, @PathVariable String uidb64 )  {
@@ -149,29 +159,47 @@ public class AuthController {
         return ResponseEntity.ok().body(result);
     }
     @PutMapping("/{uid}/")
-    public void editUser(@RequestBody EditUserInfoDTO editUserInfoDTO, @PathVariable Long uid){
-        log.info("uid,{}",uid);
-        userService.changeUserInfo(uid,editUserInfoDTO);
-    }
-    @DeleteMapping("/{uid}/")
-    public void deleteUser(@PathVariable Long uid){
-        Optional<UserInfo> userOptional = userService.getUserById(uid);
-        if (userOptional.isPresent()) {
-            UserInfo user = userOptional.get();
-            userService.deleteUser(user);
+    public void editUser(HttpServletRequest request,@RequestBody EditUserInfoDTO editUserInfoDTO, @PathVariable Long uid){
+        Optional<UserInfo> user =userService.getUserByRequest(request);
+        if (user.isPresent()) {
+            log.info("user123:{}",user.get().getId());
+            if (Objects.equals(user.get().getId(), uid)) {
+                userService.changeUserInfo(user.get(),editUserInfoDTO);
+            } else {
+                throw new AccessDenied();
+            }
         } else {
             throw new UserNotFound();
         }
+
+
+    }
+    @DeleteMapping("/{uid}/")
+    public void deleteUser(HttpServletRequest request,@PathVariable Long uid) {
+        Optional<UserInfo> user = userService.getUserByRequest(request);
+        if (user.isPresent()) {
+            if (Objects.equals(user.get().getId(), uid)) {
+                userService.deleteUser(user.get());
+            } else {
+                throw new AccessDenied();
+            }
+        } else {
+            throw new UserNotFound();
         }
+    }
 
     @PostMapping("/{uid}/image/")
-    public ImageResponseDTO editUserImage(@PathVariable Long uid, @RequestBody MultipartFile image) throws IOException {
-        log.info("uid,{}",uid);
-        log.info("image,{}",image);
-        String newImage =  userService.saveUserImage(uid,image);
-        return ImageResponseDTO.builder()
-                .image(newImage)
-                .build();
+    public ImageResponseDTO editUserImage(HttpServletRequest request,@PathVariable Long uid, @RequestBody MultipartFile image) throws IOException {
+        Optional<UserInfo> user = userService.getUserByRequest(request);
+        if (user.isPresent()) {
+            if (Objects.equals(user.get().getId(), uid)) {
+                return userService.saveUserImage(uid,image);
+            } else {
+                throw new AccessDenied();
+            }
+        } else {
+            throw new UserNotFound();
+        }
     }
     }
 

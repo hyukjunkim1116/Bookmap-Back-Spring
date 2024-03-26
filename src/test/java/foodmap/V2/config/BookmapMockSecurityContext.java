@@ -11,11 +11,11 @@ import org.springframework.security.test.context.support.WithSecurityContextFact
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @RequiredArgsConstructor
-public class FoodmapMockSecurityContext implements WithSecurityContextFactory<FoodmapMockUser> {
+public class BookmapMockSecurityContext implements WithSecurityContextFactory<BookmapMockUser> {
     private final UserRepository userRepository;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     @Override
-    public SecurityContext createSecurityContext(FoodmapMockUser annotation) {
+    public SecurityContext createSecurityContext(BookmapMockUser annotation) {
         var user = UserInfo.builder()
                 .email(annotation.email())
                 .username(annotation.username())

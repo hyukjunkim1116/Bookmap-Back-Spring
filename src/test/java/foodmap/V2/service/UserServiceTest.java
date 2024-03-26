@@ -1,5 +1,4 @@
 package foodmap.V2.service;
-
 import foodmap.V2.config.S3MockConfig;
 import foodmap.V2.domain.UserInfo;
 import foodmap.V2.dto.request.ChangePasswordRequestDTO;
@@ -16,9 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 @Import(S3MockConfig.class)
@@ -84,7 +81,6 @@ class UserServiceTest {
                 .username("김혁준")
                 .build();
         // when
-        ;
         // then
         assertThrows(InvalidPassword.class, () -> userService.signup(signUpRequestDTO));
     }
@@ -184,7 +180,6 @@ class UserServiceTest {
         UserInfo user = userRepository.findByEmail("1@1.com");
         //when
         userRepository.delete(user);
-
         //then
         assertNull(userRepository.findByEmail("1@1.com"));
     }
@@ -199,6 +194,7 @@ class UserServiceTest {
         UserInfo user = userRepository.findByEmail("1@1.com");
         //when
         String imageUrl=s3Service.saveFile(file);
+        log.info("imageUrl:{}",imageUrl);
         user.changeImage(imageUrl);
         userRepository.save(user);
         //then

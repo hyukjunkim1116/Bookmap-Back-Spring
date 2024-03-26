@@ -1,6 +1,7 @@
 package foodmap.V2.dto.request.post;
 
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,6 @@ import static java.lang.Math.min;
 
 @Getter
 @Setter
-
 public class PostSearch {
 
     private static final int MAX_SIZE = 2000;
@@ -21,7 +21,7 @@ public class PostSearch {
     private String search;
 
     private String sort;
-
+    @Builder
     public PostSearch() {
         this.page = 1;
         this.size = 6;

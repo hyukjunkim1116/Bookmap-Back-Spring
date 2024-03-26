@@ -1,6 +1,7 @@
 package foodmap.V2.service.user;
 
 import foodmap.V2.domain.RefreshToken;
+import foodmap.V2.dto.response.ImageResponseDTO;
 import foodmap.V2.dto.response.KakaoUserCredentials;
 import foodmap.V2.dto.response.KakaoUserInfoResponse;
 import foodmap.V2.repository.UserRepository;
@@ -11,11 +12,11 @@ import foodmap.V2.dto.request.SignUpRequestDTO;
 import foodmap.V2.exception.user.AlreadyExistsEmailException;
 import foodmap.V2.exception.user.InvalidPassword;
 import foodmap.V2.exception.user.UserNotFound;
+import foodmap.V2.service.JwtService;
 import foodmap.V2.service.S3Service;
-import jakarta.persistence.EntityManager;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final JwtService jwtService;
     public UserInfo getUserByEmail(String email) {
         return userRepository.findByEmail(String.valueOf(email));
     }
@@ -122,8 +124,7 @@ public class UserService {
         user.changePassword(encryptedPassword);
         userRepository.save(user);
     }
-    public void changeUserInfo(Long uid, EditUserInfoDTO editUserInfoDTO){
-        UserInfo user = this.getUserById(uid).orElseThrow(UserNotFound::new);
+    public void changeUserInfo(UserInfo user, EditUserInfoDTO editUserInfoDTO){
         user.changeUserInfo(editUserInfoDTO.getEmail(),editUserInfoDTO.getUsername());
         userRepository.save(user);
     }
@@ -141,7 +142,7 @@ public class UserService {
         }
         userRepository.delete(user);
     }
-    public String saveUserImage(Long uid, MultipartFile image) throws IOException {
+    public ImageResponseDTO saveUserImage(Long uid, MultipartFile image) throws IOException {
         UserInfo user = this.getUserById(uid).orElseThrow(UserNotFound::new);
         if (user.getImage() != null) {
             log.info("uimage,{}",user.getImage());
@@ -150,7 +151,15 @@ public class UserService {
         String imageUrl=s3Service.saveFile(image);
         user.changeImage(imageUrl);
         userRepository.save(user);
-        return imageUrl;
+        return ImageResponseDTO.builder()
+                .image(imageUrl)
+                .build();
     }
-
+    public Optional<UserInfo> getUserByRequest(HttpServletRequest request) {
+        String requestUserEmail = request.getRemoteUser();
+        if (requestUserEmail == null) {
+            return Optional.empty();
+        }
+        return userRepository.findUserInfoByEmail(requestUserEmail);
+    }
 }

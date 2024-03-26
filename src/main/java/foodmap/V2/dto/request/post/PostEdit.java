@@ -1,5 +1,6 @@
 package foodmap.V2.dto.request.post;
 
+import foodmap.V2.domain.UserInfo;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class PostEdit {
 
     @Builder
     public PostEdit(String title, String content) {
+
         this.title = title;
         this.content = content;
     }

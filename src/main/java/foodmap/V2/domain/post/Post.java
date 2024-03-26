@@ -18,7 +18,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long readCount=0L;
+    private Long readCount;
     private String title;
     private LocalDateTime createdAt=LocalDateTime.now();
     @Lob
@@ -61,8 +61,9 @@ public class Post {
     public Long getUserId() {
         return this.user.getId();
     }
-    public void setReadCount() {
-        this.readCount++;
+    // 조회수 증가 메서드 수정
+    public void increaseReadCount() {
+        this.readCount++; // 조회수를 1 증가시킴
     }
     public void addComment(Comment comment) {
         comment.setPost(this);

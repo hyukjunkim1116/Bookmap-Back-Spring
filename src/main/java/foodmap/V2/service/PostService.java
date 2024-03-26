@@ -16,6 +16,8 @@ import foodmap.V2.repository.UserRepository;
 import foodmap.V2.dto.request.post.PostCreate;
 import foodmap.V2.service.JwtService;
 import foodmap.V2.service.S3Service;
+import foodmap.V2.service.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +34,7 @@ import java.io.IOException;
 
 import java.util.List;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,13 +44,12 @@ public class PostService {
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-    private final JwtService jwtService;
     private final S3Service s3Service;
     private final EventPublisher eventPublisher;
-    public PostDetailResponseDTO write(String email, PostCreate postCreate) {
-        var user = userRepository.findUserInfoByEmail(email)
+    private final UserService userService;
+    public PostDetailResponseDTO write(Long userId, PostCreate postCreate) {
+        var user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
-
         Post post = Post.builder()
                 .user(user)
                 .title(postCreate.getTitle())
@@ -77,7 +79,7 @@ public class PostService {
                 .updated_at(String.valueOf(newPost.getCreatedAt()))
                 .build();
     }
-
+    @Transactional
     public PostDetailResponseDTO get(Long id,Long userId) {
         Post post = postRepository.findById(id)
                 .orElseThrow(PostNotFound::new);
@@ -92,7 +94,7 @@ public class PostService {
                 .likes_count((long) post.getLikedUser().size())
                 .dislikes_count((long) post.getDislike().size())
                 .comments_count((long) post.getComments().size())
-                .is_bookmarked(post.getBookmark().stream().anyMatch(uid->uid.equals(userId)))
+                .is_bookmarked(post.getBookmark().stream().anyMatch(uid-> uid.equals(userId)))
                 .is_disliked(post.getDislike().stream().anyMatch(uid->uid.equals(userId)))
                 .is_liked(post.getLikedUser().stream().anyMatch(uid->uid.equals(userId)))
                 .bookmark(post.getBookmark())
@@ -107,19 +109,12 @@ public class PostService {
                 .updated_at(String.valueOf(post.getCreatedAt()))
                 .build();
     }
-    public PostListResponseDTO getList(PostSearch postSearch, String token) {
-
-        log.info("service,{},{},{}",postSearch.getSearch(),postSearch.getSort(),postSearch.getPage());
+    @Transactional
+    public PostListResponseDTO getList(PostSearch postSearch,Long loinUserId) {
         var postList = postRepository.getList(postSearch);
         log.info("postlist,{}",postList);
         var postCount = postList.size();
         var hasNext = postRepository.hasNextPage(postSearch);
-        long loginUser;
-        if (token == null) {
-            loginUser=0L;
-        } else {
-            loginUser= Long.parseLong(jwtService.extractUserid(token.substring(7)));
-        }
         List<PostDetailResponseDTO> postDetailResponseDTOList = postList.stream().map(
                 post -> PostDetailResponseDTO.builder()
                         .author(
@@ -132,9 +127,9 @@ public class PostService {
                         .likes_count((long) post.getLikedUser().size())
                         .dislikes_count((long) post.getDislike().size())
                         .comments_count((long) post.getComments().size())
-                        .is_bookmarked(post.getBookmark().stream().anyMatch(uid->uid.equals(loginUser)))
-                        .is_disliked(post.getDislike().stream().anyMatch(uid->uid.equals(loginUser)))
-                        .is_liked(post.getLikedUser().stream().anyMatch(uid->uid.equals(loginUser)))
+                        .is_bookmarked(post.getBookmark().stream().anyMatch(uid->uid.equals(loinUserId)))
+                        .is_disliked(post.getDislike().stream().anyMatch(uid->uid.equals(loinUserId)))
+                        .is_liked(post.getLikedUser().stream().anyMatch(uid->uid.equals(loinUserId)))
                         .bookmark(post.getBookmark())
                         .content(post.getContent())
                         .created_at(String.valueOf(post.getCreatedAt()))
@@ -152,10 +147,10 @@ public class PostService {
                 .next(hasNext)
                 .results(postDetailResponseDTOList).build();
     }
-    public void increaseReadCount(Long id) {
+    public Post increaseReadCount(Long id) {
         Post post=postRepository.findById(id).orElseThrow(PostNotFound::new);
-        post.setReadCount();
-        postRepository.save(post);
+        post.increaseReadCount();
+        return postRepository.saveAndFlush(post);
     }
 
 
@@ -195,9 +190,8 @@ public class PostService {
                     .updated_at(String.valueOf(post.getCreatedAt()))
                     .build();
         } else {
-            throw new Unauthorized();
+            throw new AccessDenied();
         }
-
     }
 
     public void delete(Long postId,Long userId){
@@ -222,11 +216,10 @@ public class PostService {
             throw new AccessDenied();
         }
     }
-    public PostLikeDTO toggleLike(String token, Long postId) {
+    @Transactional
+    public PostLikeDTO toggleLike(Long userId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFound::new);
-        String accessToken = token.substring(7);
-        Long userId= Long.valueOf(jwtService.extractUserid(accessToken));
         if (!post.getLikedUser().contains(userId)) {
             post.getLikedUser().add(userId);
             eventPublisher.saveNotification(post.getUserId(),userId,post);
@@ -240,11 +233,10 @@ public class PostService {
                 .is_liked(post.getLikedUser().stream().anyMatch(uid->uid.equals(userId)))
                 .build();
     }
-    public PostDislikeDTO toggleDislike(String token, Long postId) {
+    @Transactional
+    public PostDislikeDTO toggleDislike(Long userId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFound::new);
-        String accessToken = token.substring(7);
-        Long userId= Long.valueOf(jwtService.extractUserid(accessToken));
         if (!post.getDislike().contains(userId)) {
             post.getDislike().add(userId);
         } else {
@@ -257,11 +249,10 @@ public class PostService {
                 .is_disliked(post.getDislike().stream().anyMatch(uid->uid.equals(userId)))
                 .build();
     }
-    public PostBookmarkDTO toggleBookmark(String token,Long postId) {
+    @Transactional
+    public PostBookmarkDTO toggleBookmark(Long userId,Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(PostNotFound::new);
-        String accessToken = token.substring(7);
-        Long userId= Long.valueOf(jwtService.extractUserid(accessToken));
         if (!post.getBookmark().contains(userId)) {
             post.getBookmark().add(userId);
         } else {

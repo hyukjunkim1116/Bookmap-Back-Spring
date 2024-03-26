@@ -1,20 +1,19 @@
 package foodmap.V2.controller;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import foodmap.V2.config.FoodmapMockUser;
+import foodmap.V2.config.BookmapMockUser;
+import foodmap.V2.config.S3MockConfig;
 import foodmap.V2.domain.UserInfo;
 import foodmap.V2.dto.request.*;
 import foodmap.V2.repository.UserRepository;
-import foodmap.V2.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
@@ -28,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @Slf4j
 @SpringBootTest
+@Import(S3MockConfig.class)
 @AutoConfigureMockMvc
 class AuthControllerTest {
     @Autowired
@@ -38,8 +38,11 @@ class AuthControllerTest {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @BeforeEach
-    void before() {
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAll();
+    }
+    private Map<String, Object> LoginAndGetResponse() throws Exception {
         UserInfo user = UserInfo.builder()
                 .email("1@1.com")
                 .password(passwordEncoder.encode("1234"))
@@ -49,12 +52,6 @@ class AuthControllerTest {
                 .social(false)
                 .build();
         userRepository.save(user);
-    }
-    @AfterEach
-    void tearDown() {
-        userRepository.deleteAll();
-    }
-    private Map<String, Object> LoginAndGetResponse() throws Exception {
         LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder()
                 .email("1@1.com")
                 .password("1234")
@@ -67,7 +64,6 @@ class AuthControllerTest {
         return objectMapper.readValue(response.getContentAsString(), new TypeReference<>() {
         });
     }
-
     @Test
     @DisplayName("회원가입")
     void signup() throws Exception {
@@ -86,11 +82,19 @@ class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
     }
-
     @Test
     @DisplayName("로그인 후 토큰 발급")
     void authenticateAndGetToken() throws Exception {
         // given
+        UserInfo user = UserInfo.builder()
+                .email("1@1.com")
+                .password(passwordEncoder.encode("1234"))
+                .username("test")
+                .image(null)
+                .isVerified(false)
+                .social(false)
+                .build();
+        userRepository.save(user);
         LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder()
                 .email("1@1.com")
                 .password("1234")
@@ -107,47 +111,24 @@ class AuthControllerTest {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-
     @Test
-    void kakaoLogin() {
-    }
-
-    @Test
+    @BookmapMockUser
+    @DisplayName("로그인 유저의 비밀번호 변경")
     void changePassword() throws Exception {
         // given
-        Map<String, Object> response = this.LoginAndGetResponse();
-        String accessToken = (String) response.get("access");
-        log.info("access1234 : {}",response);
         ChangePasswordRequestDTO changePasswordRequestDTO = ChangePasswordRequestDTO.builder()
-                .oldPassword("1234")
+                .oldPassword("1")
                 .newPassword("2345")
                 .newPasswordConfirm("2345")
                 .build();
+        //expected
         mockMvc.perform(put("/api/users/change-password/")
-                        .header("Authorization","Bearer "+accessToken)
                         .content(objectMapper.writeValueAsString(changePasswordRequestDTO))
                         .contentType(APPLICATION_JSON))
                         .andExpect(status().isOk());
-        LoginRequestDTO loginRequestDTO1 = LoginRequestDTO.builder()
-                .email("1@1.com")
-                .password("2345")
-                .build();
-        mockMvc.perform(post("/api/users/login/")
-                        .content(objectMapper.writeValueAsString(loginRequestDTO1))
-                        .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
     }
-
     @Test
-    void sendVerifyEmail() {
-    }
-
-    @Test
-    void verifyEmailPermit() {
-    }
-
-    @Test
+    @DisplayName("로그인 한 유저의 엑세스 토큰 재발급")
     void refreshToken() throws Exception {
         //given
         Map<String, Object> response = this.LoginAndGetResponse();
@@ -161,7 +142,18 @@ class AuthControllerTest {
                 .andExpect(status().isOk());
     }
     @Test
+    @DisplayName("로그인 안한 유저의 비밀번호 찾기")
     void findPassword() throws Exception {
+        //given
+        UserInfo user = UserInfo.builder()
+                .email("1@1.com")
+                .password(passwordEncoder.encode("1234"))
+                .username("test")
+                .image(null)
+                .isVerified(false)
+                .social(false)
+                .build();
+        userRepository.save(user);
         EmailRequestDTO emailRequestDTO = EmailRequestDTO.builder()
                 .email("1@1.com")
                 .build();
@@ -171,52 +163,59 @@ class AuthControllerTest {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-
     @Test
+    @DisplayName("로그인 한 유저의 정보 변경")
     void editUser() throws Exception {
         //given
         Map<String, Object> response = this.LoginAndGetResponse();
-        String accessToken = (String) response.get("access");
+        String access = (String) response.get("access");
+        String email = (String) response.get("email");
+        UserInfo user = userRepository.findByEmail(email);
         EditUserInfoDTO editUserInfoDTO = EditUserInfoDTO.builder()
                 .email("11@11.com")
                 .username("kimtest").build();
-        String auth = String.format("Bearer %s",accessToken);
         //expected
-        mockMvc.perform(put("/api/users/1/")
-                        .header("Authorization",auth)
+        mockMvc.perform(put("/api/users/"+user.getId() +"/")
+                        .header("Authorization","Bearer "+access)
                         .content(objectMapper.writeValueAsString(editUserInfoDTO))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @DisplayName("로그인 한 유저의 계정 삭제")
     void deleteUser() throws Exception {
         //given
         Map<String, Object> response = this.LoginAndGetResponse();
-        String accessToken = (String) response.get("access");
-        String auth = String.format("Bearer %s",accessToken);
+        String access = (String) response.get("access");
+        String email = (String) response.get("email");
+        UserInfo user = userRepository.findByEmail(email);
         //expected
-        mockMvc.perform(delete("/api/users/1/")
-                        .header("Authorization",auth)
+        mockMvc.perform(delete("/api/users/"+user.getId() +"/")
+                        .header("Authorization","Bearer "+access)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @DisplayName("로그인 한 유저의 프로필 사진 변경")
     void editUserImage() throws Exception {
         //given
         Map<String, Object> response = this.LoginAndGetResponse();
-        String accessToken = (String) response.get("access");
-        String auth = String.format("Bearer %s",accessToken);
+        String access = (String) response.get("access");
+        String email = (String) response.get("email");
+        UserInfo user = userRepository.findByEmail(email);
         MockMultipartFile file = new MockMultipartFile(
                 "image",      // 파라미터 이름
                 "filename.jpg", // 파일 이름
                 MediaType.IMAGE_JPEG_VALUE, // 파일 타입
                 "test data".getBytes());    // 파일 데이터
+        //expected
         mockMvc.perform(
-                        multipart("/api/users/1/image/")
-                                .file(file)  // 파일 전달
-                                .header("Authorization", auth))
-                .andExpect(status().isOk());
+                        multipart("/api/users/"+user.getId() +"/image/")
+                                .file(file)
+                                .header("Authorization","Bearer "+access))// 파일 전달
+                .andExpect(status().isOk())
+                .andReturn();
     }
 }
