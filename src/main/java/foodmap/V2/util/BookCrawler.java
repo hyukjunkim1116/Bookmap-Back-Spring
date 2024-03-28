@@ -20,9 +20,7 @@ public class BookCrawler {
     private final LocationData locationData;
 public String getCurrentBookCode(String uri) {
     String[] pathSegments = uri.split("/");
-    String lastPathSegment = pathSegments[pathSegments.length - 1];
-    log.info("lastPathSegment : {}",lastPathSegment);
-    return lastPathSegment;
+    return pathSegments[pathSegments.length - 1];
 }
     public List<BookCrawlingResponseDTO> scrapeWebsite(String isbn) throws IOException {
        WebDriver webDriver = new ChromeDriver();
@@ -36,7 +34,6 @@ public String getCurrentBookCode(String uri) {
        String uri = webDriver.getCurrentUrl();
        String code = this.getCurrentBookCode(uri);
        List<WebElement> elements = webDriver.findElements(By.className("tbl_col"));
-       log.info("currentUrl : {}",webDriver.getCurrentUrl());
         for (WebElement element : elements) {
             List<WebElement> tds = element.findElement(By.tagName("tbody"))
                     .findElement(By.tagName("tr"))
@@ -66,7 +63,6 @@ public String getCurrentBookCode(String uri) {
             }
         }
         webDriver.close();
-        log.info("resultList :{}",resultList);
         return resultList;
         }
 }

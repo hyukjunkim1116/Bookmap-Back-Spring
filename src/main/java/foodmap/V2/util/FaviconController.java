@@ -9,4 +9,8 @@ public class FaviconController {
     public void returnEmptyFavicon() {
         // 아무런 내용도 반환하지 않음
     }
+    @GetMapping("")
+    public void returnEmpty() {
+        // 아무런 내용도 반환하지 않음
+    }
 }

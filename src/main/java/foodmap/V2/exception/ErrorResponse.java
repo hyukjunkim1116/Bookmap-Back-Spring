@@ -1,8 +1,7 @@
 package foodmap.V2.exception;
 
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.io.IOException;
 import java.util.HashMap;

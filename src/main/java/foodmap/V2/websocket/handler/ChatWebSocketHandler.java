@@ -2,7 +2,7 @@ package foodmap.V2.websocket.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import foodmap.V2.websocket.manager.WebSocketSessionManager;
+import foodmap.V2.websocket.manager.WebChatSessionManager;
 import foodmap.V2.websocket.domain.Chat;
 import foodmap.V2.user.domain.UserInfo;
 import foodmap.V2.websocket.dto.request.ChatRequestDTO;
@@ -25,12 +25,12 @@ import java.time.LocalDateTime;
 public class ChatWebSocketHandler implements WebSocketHandler {
     private final UserRepository userRepository;
     private final ChatRepository chatRepository;
-    private final WebSocketSessionManager webSocketSessionManager;
+    private final WebChatSessionManager webChatSessionManager;
 
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        webSocketSessionManager.addSession(session);
+        webChatSessionManager.addSession(session);
     }
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
@@ -55,7 +55,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
                 .chat(savedChat)
                 .build();
         TextMessage textMessage = new TextMessage(objectMapper.writeValueAsString(chatResponseDTO));
-        for (WebSocketSession s : webSocketSessionManager.getSessionList()) {
+        for (WebSocketSession s : webChatSessionManager.getSessionList()) {
             s.sendMessage(textMessage);
         }
 
@@ -64,13 +64,13 @@ public class ChatWebSocketHandler implements WebSocketHandler {
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception){
         log.info("error occured");
-        webSocketSessionManager.removeSession(session);
+        webChatSessionManager.removeSession(session);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus){
         log.info("close chat");
-        webSocketSessionManager.removeSession(session);
+        webChatSessionManager.removeSession(session);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.SdkClientException;
 import foodmap.V2.exception.ErrorResponse;
 import foodmap.V2.exception.FoodMapException;
+import foodmap.V2.exception.jwt.CustomExpiredJwtException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,16 @@ import java.io.IOException;
 public class ExceptionController {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CustomExpiredJwtException.class)
+    public ErrorResponse CustomExpiredJwtExceptionHandler(CustomExpiredJwtException e) {
+        int statusCode = e.getStatusCode();
+        return ErrorResponse.builder()
+                .code(String.valueOf(statusCode))
+                .message(e.getMessage())
+                .build();
+    }
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse MethodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         ErrorResponse response = ErrorResponse.builder()
@@ -42,15 +53,6 @@ public class ExceptionController {
         return ErrorResponse.builder()
                 .code("400")
                 .message("아이디 혹은 비밀번호가 틀렸습니당")
-                .build();
-    }
-    @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ExpiredJwtException.class)
-    public ErrorResponse ExpiredJwtExceptionHandler(ExpiredJwtException e) {
-        return ErrorResponse.builder()
-                .code("401")
-                .message("Access 토큰 만료")
                 .build();
     }
     @ResponseBody

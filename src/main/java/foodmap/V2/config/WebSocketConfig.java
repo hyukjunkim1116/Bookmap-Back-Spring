@@ -1,7 +1,8 @@
 package foodmap.V2.config;
 
 import foodmap.V2.event.listener.NotificationEventListener;
-import foodmap.V2.websocket.manager.WebSocketSessionManager;
+import foodmap.V2.websocket.manager.NotificationSessionManager;
+import foodmap.V2.websocket.manager.WebChatSessionManager;
 import foodmap.V2.websocket.handler.ChatWebSocketHandler;
 import foodmap.V2.websocket.repository.ChatRepository;
 import foodmap.V2.user.repository.UserRepository;
@@ -17,12 +18,13 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 public class WebSocketConfig implements WebSocketConfigurer {
     private final UserRepository userRepository;
     private final ChatRepository chatRepository;
-    private final WebSocketSessionManager sessionManager;
+    private final WebChatSessionManager webChatSessionManager;
+    private final NotificationSessionManager notificationSessionManager;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new ChatWebSocketHandler(userRepository,chatRepository,sessionManager),"/webchat").addInterceptors(new HttpSessionHandshakeInterceptor())
-                .addHandler(new NotificationEventListener(sessionManager),"/notification").addInterceptors(new HttpSessionHandshakeInterceptor())
+        registry.addHandler(new ChatWebSocketHandler(userRepository,chatRepository,webChatSessionManager),"/webchat").addInterceptors(new HttpSessionHandshakeInterceptor())
+                .addHandler(new NotificationEventListener(notificationSessionManager),"/notification").addInterceptors(new HttpSessionHandshakeInterceptor())
                 .setAllowedOrigins("http://localhost:9030");
     }
 }

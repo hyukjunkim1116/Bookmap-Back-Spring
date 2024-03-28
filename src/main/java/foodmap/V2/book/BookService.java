@@ -1,4 +1,5 @@
 package foodmap.V2.book;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import foodmap.V2.book.dto.BookCrawlingResponseDTO;
 import foodmap.V2.book.dto.BookDetailRequestDTO;
 import foodmap.V2.book.dto.BookSearchRequestDTO;
@@ -8,12 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import foodmap.V2.websocket.dto.response.EventNotificationResponseDTO;
 import foodmap.V2.event.listener.NotificationEventListener;
-import foodmap.V2.websocket.manager.WebSocketSessionManager;
+import foodmap.V2.websocket.manager.NotificationSessionManager;
 import foodmap.V2.websocket.domain.Notification;
 import foodmap.V2.user.domain.UserInfo;
 import foodmap.V2.websocket.dto.response.NotificationResponseDTO;
@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class CustomEventHandler {
     private final NotificationRepository notificationRepository;
-    private final WebSocketSessionManager sessionManager;
+    private final NotificationSessionManager notificationSessionManager;
     private final NotificationEventListener notificationEventListener;
     private final UserRepository userRepository;
     @EventListener
@@ -43,7 +43,7 @@ public class CustomEventHandler {
                 .not(savedNotification).build();
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         TextMessage textMessage = new TextMessage(objectMapper.writeValueAsString(notificationResponseDTO));
-        for (WebSocketSession s : sessionManager.getSessionList()) {
+        for (WebSocketSession s : notificationSessionManager.getSessionList()) {
             String url = String.valueOf(s.getUri());
             Long uid = Long.valueOf(url.split("=")[1]);
             if (uid.equals(event.getReceiverId())) {
