@@ -1,11 +1,7 @@
 package foodmap.V2.config.filter;
 
-import foodmap.V2.exception.ErrorResponse;
-import foodmap.V2.exception.user.InvalidRequest;
-import foodmap.V2.exception.user.Unauthorized;
-import foodmap.V2.service.JwtService;
-import foodmap.V2.service.user.UserDetailsServiceImpl;
-import io.jsonwebtoken.ExpiredJwtException;
+import foodmap.V2.jwt.JwtService;
+import foodmap.V2.user.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +10,6 @@ import lombok.AllArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

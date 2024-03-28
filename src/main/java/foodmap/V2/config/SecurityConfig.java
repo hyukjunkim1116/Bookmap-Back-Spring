@@ -4,8 +4,8 @@ package foodmap.V2.config;
 import foodmap.V2.config.filter.JwtAuthFilter;
 import foodmap.V2.config.handler.JwtAccessDeniedHandler;
 import foodmap.V2.config.handler.JwtAuthenticationEntryPoint;
-import foodmap.V2.repository.UserRepository;
-import foodmap.V2.service.user.UserDetailsServiceImpl;
+import foodmap.V2.user.repository.UserRepository;
+import foodmap.V2.user.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.annotation.Bean;
@@ -52,7 +52,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/api/books/").permitAll()
+                        .requestMatchers("/api/books").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/books/detail").permitAll()

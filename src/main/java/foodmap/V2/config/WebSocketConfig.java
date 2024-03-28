@@ -1,9 +1,10 @@
 package foodmap.V2.config;
 
-import foodmap.V2.config.listener.NotificationEventListener;
-import foodmap.V2.config.handler.ChatWebSocketHandler;
-import foodmap.V2.repository.ChatRepository;
-import foodmap.V2.repository.UserRepository;
+import foodmap.V2.event.listener.NotificationEventListener;
+import foodmap.V2.websocket.manager.WebSocketSessionManager;
+import foodmap.V2.websocket.handler.ChatWebSocketHandler;
+import foodmap.V2.websocket.repository.ChatRepository;
+import foodmap.V2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.*;

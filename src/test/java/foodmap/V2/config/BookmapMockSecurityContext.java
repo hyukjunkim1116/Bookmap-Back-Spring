@@ -1,8 +1,8 @@
 package foodmap.V2.config;
 
-import foodmap.V2.domain.UserInfo;
-import foodmap.V2.repository.UserRepository;
-import foodmap.V2.service.user.UserDetailsServiceImpl;
+import foodmap.V2.user.domain.UserInfo;
+import foodmap.V2.user.repository.UserRepository;
+import foodmap.V2.user.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
