@@ -66,6 +66,7 @@ public class PostService {
                     .content(postEditRequestDTO.getContent())
                     .build();
             post.edit(postEditor);
+            postRepository.save(post);
             return buildPostDetailResponse(post, userId);
         } else {
             throw new AccessDenied();
