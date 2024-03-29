@@ -16,6 +16,17 @@
 
 ## Stacks 🐈
 
+#### Spring, Spring Boot
+
+- Spring
+  - 스프링에서 제공하는 기능을 바탕으로 비즈니스 로직 작성에 집중할 수 있습니다. 또한, 생성자 주입을 통해 의존성을 파악하기 위해 도입했습니다.
+- Spring Boot
+  - 스프링에서 프로젝트와 라이브러리 설정을 자동으로 설정하고 편리하게 이용하기 위해 도입했습니다.
+
+#### Spring Security
+
+- 웹 개발에서 필수적인인증&인가 기능을 미리 제공하는 Spring Security를 활용함으로써 효과적이고 신속하게 보안 기능을 구현했습니다.
+
 ### Environment
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white)
 ![Github](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white)
