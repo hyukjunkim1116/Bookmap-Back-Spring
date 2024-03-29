@@ -1,7 +1,10 @@
 package foodmap.V2.jwt;
 
+import foodmap.V2.exception.jwt.AccessTokenExpired;
+import foodmap.V2.exception.user.Unauthorized;
 import foodmap.V2.jwt.RefreshToken;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -37,12 +40,14 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSignKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
     }
     public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());

@@ -2,6 +2,7 @@ package foodmap.V2.exception;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.*;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,7 +32,8 @@ public class ErrorResponse {
     public void addValidation(String fieldName, String errorMessage) {
         this.validation.put(fieldName, errorMessage);
     }
-}
+    }
+
 
 
 

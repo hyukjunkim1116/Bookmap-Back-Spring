@@ -46,15 +46,15 @@ public class UserController {
     private final JwtService jwtService;
     private final EmailService emailService;
     private final KakaoService kakaoService;
-    @PostMapping("/")
+    @PostMapping("")
     public void signup(@RequestBody SignUpRequestDTO signUpRequestDTO){
         userService.signup(signUpRequestDTO);
     }
-    @PostMapping("/login/")
+    @PostMapping("/login")
     public UserCreateResponseDTO normalLogin(@RequestBody LoginRequestDTO loginRequestDTO) {
         return  userService.login(loginRequestDTO);
     }
-    @PostMapping("/kakao/")
+    @PostMapping("/kakao")
     public UserCreateResponseDTO kakaoLogin(@RequestBody String code) {
         KakaoTokenResponse kakaoTokenResponse = kakaoService.getData(code);
         KakaoUserInfoResponseDTO userInfo = kakaoService.getUserInfo(kakaoTokenResponse.getAccess_token());
@@ -64,12 +64,12 @@ public class UserController {
                 .email(savedUser.getEmail()).build();
         return userService.login(loginRequestDTO);
     }
-    @PutMapping("/change-password/")
+    @PutMapping("/change-password")
     public void changePassword(HttpServletRequest request, @RequestBody ChangePasswordRequestDTO changePasswordRequestDTO){
         UserInfo user =userService.getUserByRequest(request).orElseThrow(UserNotFound::new);
         userService.authChangePassword(user,changePasswordRequestDTO);
     }
-    @PostMapping("/{uid}/verify/")
+    @PostMapping("/{uid}/verify")
     public void sendVerifyEmail(HttpServletRequest request,@PathVariable Long uid) {
         Optional<UserInfo> userInfoOptional =userService.getUserByRequest(request);
         userInfoOptional.ifPresentOrElse(
@@ -87,7 +87,7 @@ public class UserController {
     public RedirectView verifyEmailPermit(@PathVariable String token, @PathVariable String uidb64 )  {
         return emailService.verifyEmailAndRedirect(token,uidb64);
     }
-    @PostMapping("/token/refresh/")
+    @PostMapping("/token/refresh")
     public JwtResponseDTO refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO){
         UserInfo user = userService.findUserByRefresh(refreshTokenRequestDTO.getRefresh());
         if (jwtService.verifyRefreshTokenExpiration(user.getRefreshToken())) {
@@ -99,12 +99,12 @@ public class UserController {
             throw new RefreshTokenExpired();
         }
     }
-    @PutMapping("/find-password/")
+    @PutMapping("/find-password")
     public UserNewPasswordResponseDTO findPassword(@RequestBody EmailRequestDTO emailRequestDTO){
         UserInfo user = userService.getIfUserByEmail(emailRequestDTO.getEmail()).orElseThrow(UserNotFound::new);
         return userService.findPassword(user);
     }
-    @PutMapping("/{uid}/")
+    @PutMapping("/{uid}")
     public void editUser(HttpServletRequest request, @RequestBody EditUserInfoRequestDTO editUserInfoRequestDTO, @PathVariable Long uid){
         UserInfo user =userService.getUserByRequest(request).orElseThrow(UserNotFound::new);
         if (Objects.equals(user.getId(), uid)) {
@@ -113,7 +113,7 @@ public class UserController {
             throw new AccessDenied();
         }
     }
-    @DeleteMapping("/{uid}/")
+    @DeleteMapping("/{uid}")
     public void deleteUser(HttpServletRequest request,@PathVariable Long uid) {
         UserInfo user =userService.getUserByRequest(request).orElseThrow(UserNotFound::new);
         if (Objects.equals(user.getId(), uid)) {
@@ -122,7 +122,7 @@ public class UserController {
             throw new AccessDenied();
         }
     }
-    @PostMapping("/{uid}/image/")
+    @PostMapping("/{uid}/image")
     public ImageResponseDTO editUserImage(HttpServletRequest request,@PathVariable Long uid, @RequestBody MultipartFile image) throws IOException {
         UserInfo user =userService.getUserByRequest(request).orElseThrow(UserNotFound::new);
             if (Objects.equals(user.getId(), uid)) {

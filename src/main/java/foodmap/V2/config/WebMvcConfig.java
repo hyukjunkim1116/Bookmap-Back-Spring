@@ -19,7 +19,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:9030","http://localhost:8080")
                 .allowCredentials(true) // 쿠키, 인증 헤더 등의 자격 증명 허용
-                .allowedHeaders("Authorization", "Content-Type","Access-Control-Allow-Origin")
+                .allowedHeaders("Authorization", "Content-Type")
+                .exposedHeaders("Access-Control-Allow-Origin")
                 .allowedMethods(ALLOWED_METHOD_NAMES.split(","));
     }
 }

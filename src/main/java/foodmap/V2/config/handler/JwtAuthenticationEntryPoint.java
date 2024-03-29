@@ -5,6 +5,7 @@ import foodmap.V2.exception.ErrorResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,15 +25,16 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        log.error("[인증오류] 로그인이 필요합니다.");
-        log.info(String.valueOf(authException));
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .code("401")
-                .message("로그인이 필요합니다.")
-                .build();
-        response.setContentType(APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding(UTF_8.name());
-        response.setStatus(SC_UNAUTHORIZED);
-        objectMapper.writeValue(response.getWriter(), errorResponse);
+            log.error("[인증오류] 로그인이 필요합니다.");
+            log.info(String.valueOf(authException));
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .code("401")
+                    .message("로그인이 필요합니다.")
+                    .build();
+            response.setContentType(APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding(UTF_8.name());
+            response.setStatus(SC_UNAUTHORIZED);
+            objectMapper.writeValueAsString(errorResponse);
+
     }
 }

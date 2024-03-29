@@ -29,13 +29,13 @@ public class PostController {
     private final UserService userService;
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public PostListResponseDTO get(@ModelAttribute PostSearchRequestDTO postSearchRequestDTO, HttpServletRequest request) {
         Optional<UserInfo> user = userService.getUserByRequest(request);
         Long loginUserId = user.map(UserInfo::getId).orElse(null);
         return postService.getList(postSearchRequestDTO, loginUserId);
     }
-    @PostMapping("/")
+    @PostMapping("")
     public PostDetailResponseDTO create(HttpServletRequest request, @RequestBody PostCreateRequestDTO postCreateRequestDTO) {
         UserInfo user = userService.getUserByRequest(request).orElseThrow(UserNotFound::new);
         return postService.write(user, postCreateRequestDTO);

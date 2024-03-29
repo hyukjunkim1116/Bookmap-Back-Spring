@@ -2,11 +2,7 @@ package foodmap.V2.exception;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.SdkClientException;
-import foodmap.V2.exception.ErrorResponse;
-import foodmap.V2.exception.FoodMapException;
-import foodmap.V2.exception.jwt.CustomExpiredJwtException;
 import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +19,17 @@ import java.io.IOException;
 @Slf4j
 @ControllerAdvice
 public class ExceptionController {
-    @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(CustomExpiredJwtException.class)
-    public ErrorResponse CustomExpiredJwtExceptionHandler(CustomExpiredJwtException e) {
-        int statusCode = e.getStatusCode();
-        return ErrorResponse.builder()
-                .code(String.valueOf(statusCode))
-                .message(e.getMessage())
-                .build();
-    }
+
+//    @ExceptionHandler(ExpiredJwtException.class)
+//    public ResponseEntity<ErrorResponse> ExpiredJwtExceptionHandler(ExpiredJwtException e) {
+//        log.info("here");
+//        ErrorResponse body= ErrorResponse.builder()
+//                .code("401")
+//                .message("토큰이 만료 되었습니다.")
+//                .build();
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                .body(body);
+//    }
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

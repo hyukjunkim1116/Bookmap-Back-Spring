@@ -4,6 +4,7 @@ package foodmap.V2.config;
 import foodmap.V2.config.filter.JwtAuthFilter;
 import foodmap.V2.config.handler.JwtAccessDeniedHandler;
 import foodmap.V2.config.handler.JwtAuthenticationEntryPoint;
+import foodmap.V2.jwt.JwtService;
 import foodmap.V2.user.repository.UserRepository;
 import foodmap.V2.user.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +34,10 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtAuthFilter jwtAuthFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final UserRepository userRepository;
+    private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -58,12 +59,12 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/books/detail").permitAll()
                         .requestMatchers("/api/books/crawling").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/users/").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/users").permitAll()
                         .requestMatchers(HttpMethod.GET,"/").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/posts/**").permitAll()
-                        .requestMatchers("/api/users/login/","/api/users/kakao/"
-                                ,"/favicon.ico","/error","/api/users/token/refresh/"
-                                ,"/api/users/find-password/").permitAll()
+                        .requestMatchers("/api/users/login","/api/users/kakao"
+                                ,"/favicon.ico","/error","/api/users/token/refresh"
+                                ,"/api/users/find-password").permitAll()
                         .requestMatchers("/api/users/verify/**").permitAll()
                         .requestMatchers("/notification/**","/webchat/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
@@ -78,10 +79,10 @@ public class SecurityConfig {
                 .headers(headers ->
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
+
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
