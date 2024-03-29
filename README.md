@@ -85,8 +85,7 @@
 │   ├── WebMvcConfig.java
 │   ├── WebSocketConfig.java
 │   ├── filter
-│   ├── handler
-│   └── interceptor
+│   └── handler
 ├── event
 │   ├── handler
 │   ├── listener
