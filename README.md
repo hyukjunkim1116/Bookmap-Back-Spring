@@ -9,9 +9,9 @@
 #### Spring, Spring Boot
 
 - Spring
-  - 스프링에서 제공하는 기능을 바탕으로 비즈니스 로직 작성에 집중할 수 있습니다. 또한, 생성자 주입을 통해 의존성을 파악하기 위해 도입했습니다.
+  스프링에서 제공하는 기능을 바탕으로 비즈니스 로직 작성에 집중할 수 있습니다. 또한, 생성자 주입을 통해 의존성을 파악하기 위해 도입했습니다.
 - Spring Boot
-  - 스프링에서 프로젝트와 라이브러리 설정을 자동으로 설정하고 편리하게 이용하기 위해 도입했습니다.
+  스프링에서 프로젝트와 라이브러리 설정을 자동으로 설정하고 편리하게 이용하기 위해 도입했습니다.
 
 #### Spring Security
 
@@ -30,10 +30,6 @@
 
 ### Communication
 <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white">
-
----
-
-## 화면 구성 📺
 
 ---
 
