@@ -4,10 +4,6 @@
 
 ---
 
-## Requirements
-
----
-
 ## Stacks 🐈
 
 #### Spring, Spring Boot
