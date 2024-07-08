@@ -15,7 +15,7 @@
 
 #### Spring Security
 
-- 웹 개발에서 필수적인인증&인가 기능을 미리 제공하는 Spring Security를 활용함으로써 효과적이고 신속하게 보안 기능을 구현했습니다.
+- 웹 개발에서 필수적인 인증,인가 기능을 미리 제공하는 Spring Security를 활용함으로써 효과적이고 신속하게 보안 기능을 구현했습니다.
 
 ### Environment
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white)
