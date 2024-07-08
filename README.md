@@ -2,12 +2,6 @@
 
 - [프론트엔드 바로가기](https://github.com/hyukjunkim1116/Bookmap-Front-Vue3)
 
-## 배포 주소
-
-## 프로젝트 소개
-
-## 시작 가이드
-
 ---
 
 ## Requirements
